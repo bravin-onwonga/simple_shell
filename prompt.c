@@ -1,6 +1,6 @@
 #include "main.h"
 
-int _strlen(char *s);
+size_t _strlen(char *s);
 int _strcmp(char *str1, char *str2);
 
 /**
@@ -12,7 +12,7 @@ int _strcmp(char *str1, char *str2);
 int main(void)
 {
 	int len_prompt, status;
-	char *str = "#cisfun$ ", *stream = NULL;
+	char *str = "$ ", *stream = NULL;
 	size_t len = 0, stream_len;
 	pid_t pid, terminated_child;
 
@@ -35,7 +35,7 @@ int main(void)
 		if (_strcmp(stream, "exit") == 0)
 			break;
 
-		stream_len = strlen(stream);
+		stream_len = _strlen(stream);
 
 		pid = fork();
 
@@ -71,7 +71,7 @@ int main(void)
  * Return: length of string
  */
 
-int _strlen(char *s)
+size_t _strlen(char *s)
 {
 	int i;
 
@@ -82,7 +82,7 @@ int _strlen(char *s)
 }
 
 /**
- * _strcpm - compares two strings
+ * _strcmp - compares two strings
  *
  * @str1: first string
  * @str2: second string
@@ -92,7 +92,7 @@ int _strcmp(char *str1, char *str2)
 {
 	int i = 0;
 
-	while (str1[i] != '\n')
+	while (str2[i] != '\n')
 	{
 		if (str1[i] != str2[i])
 		{
@@ -101,5 +101,5 @@ int _strcmp(char *str1, char *str2)
 		i++;
 	}
 
-	return 0;
+	return (0);
 }
