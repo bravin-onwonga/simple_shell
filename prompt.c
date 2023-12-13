@@ -1,6 +1,7 @@
 #include "main.h"
 
 int _strlen(char *s);
+int _strcmp(char *str1, char *str2);
 
 /**
  * main - Entry Point
@@ -31,6 +32,9 @@ int main(void)
 			exit(EXIT_FAILURE);
 		}
 
+		if (_strcmp(stream, "exit") == 0)
+			break;
+
 		stream_len = strlen(stream);
 
 		pid = fork();
@@ -39,6 +43,7 @@ int main(void)
 		{
 			perror("Fork Failed");
 			exit(EXIT_FAILURE);
+			break;
 		}
 
 		else if (pid == 0)
@@ -54,19 +59,6 @@ int main(void)
 				exit(EXIT_FAILURE);
 			}
 		}
-
-		/**
-		 *else
-		 *{
-		 *	if (strcmp(stream, "exit\n") == 0)
-		 *		break;
-		 *			if (fwrite(stream, 1, stream_len, stdout) != stream_len)
-		 *	{
-		 *		perror("Error writing to stdout");
-		 *		exit(EXIT_FAILURE);
-		 *	}
-		 *}
-		 */
 	}
 	exit(EXIT_SUCCESS);
 }
@@ -87,4 +79,27 @@ int _strlen(char *s)
 		;
 
 	return (i);
+}
+
+/**
+ * _strcpm - compares two strings
+ *
+ * @str1: first string
+ * @str2: second string
+ */
+
+int _strcmp(char *str1, char *str2)
+{
+	int i = 0;
+
+	while (str1[i] != '\n')
+	{
+		if (str1[i] != str2[i])
+		{
+			return (-1);
+		}
+		i++;
+	}
+
+	return 0;
 }
