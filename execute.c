@@ -19,7 +19,7 @@ void execute_function(char *str, size_t len)
 
 	if (execve(argv[0], argv, environ) == -1)
 	{
-		s = argv[0];
+		s = "./shell";
 		perror(s);
 	}
 
