@@ -12,14 +12,21 @@ int main(void)
 {
 	int len_prompt;
 	char *str = "$ ";
+	char stream[1024];
 
 	while (1)
 	{
 		len_prompt = _strlen(str);
 
-		if (fwrite(str, 1, len_prompt, stdout) == -1)
+		if (write(STDOUT_FILENO, str, len_prompt) == -1)
 		{
 			perror("Write failed");
+			exit(EXIT_FAILURE);
+		}
+
+		if (fgets(stream, sizeof(stream), stdin) == NULL)
+		{
+			perror("Error reading input");
 			exit(EXIT_FAILURE);
 		}
 	}
