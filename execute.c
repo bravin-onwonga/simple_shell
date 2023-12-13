@@ -17,10 +17,18 @@ void execute_function(char *str, size_t len)
 
 	argv = split_string(str);
 
+	if (argv[1] != NULL)
+	{
+		s = "./shell";
+		perror(s);
+		exit(EXIT_FAILURE);
+	}
+
 	if (execve(argv[0], argv, environ) == -1)
 	{
 		s = "./shell";
 		perror(s);
+		exit(EXIT_FAILURE);
 	}
 
 	free(argv);
