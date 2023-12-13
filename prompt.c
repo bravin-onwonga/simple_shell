@@ -22,13 +22,18 @@ int main(void)
 		{
 			if (feof(stdin))
 				continue;
-
-			perror("Error reading input");
-			exit(EXIT_FAILURE);
+			else
+			{
+				perror("Error reading input");
+				exit(EXIT_FAILURE);
+			}
 		}
 
 		if (_strcmp(stream, "exit\n") == 0)
-			break;
+		{
+			free(stream);
+			exit(EXIT_SUCCESS);
+		}
 
 		stream_len = _strlen(stream);
 
@@ -74,8 +79,6 @@ int main(void)
 			}
 		}
 	}
-	free(stream);
-	exit(EXIT_SUCCESS);
 }
 
 /**
