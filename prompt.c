@@ -11,28 +11,23 @@ int _strcmp(char *str1, char *str2);
 
 int main(void)
 {
-	int len_prompt, status;
-	char *str = "$ ", *stream = NULL;
+	int status, exit_status;
+	char *stream = NULL;
 	size_t len = 0, stream_len;
 	pid_t pid, terminated_child;
 
 	while (1)
 	{
-		len_prompt = _strlen(str);
-
-		if (write(STDOUT_FILENO, str, len_prompt) == -1)
-		{
-			perror("Write failed");
-			exit(EXIT_FAILURE);
-		}
-
 		if (getline(&stream, &len, stdin) == -1)
 		{
+			if (feof(stdin))
+				continue;
+
 			perror("Error reading input");
 			exit(EXIT_FAILURE);
 		}
 
-		if (_strcmp(stream, "exit") == 0)
+		if (_strcmp(stream, "exit\n") == 0)
 			break;
 
 		stream_len = _strlen(stream);
@@ -48,7 +43,12 @@ int main(void)
 
 		else if (pid == 0)
 		{
-			execute_function(stream, stream_len);
+			if (_strcmp(stream, "env\n") == 0)
+				print_env(environ);
+			else
+			{
+				execute_function(stream, stream_len);
+			}
 		}
 		else
 		{
@@ -58,8 +58,23 @@ int main(void)
 				perror("Couldn't exit");
 				exit(EXIT_FAILURE);
 			}
+
+			if (WIFEXITED(status))
+			{
+				exit_status = WEXITSTATUS(status);
+				if (exit_status != 0)
+				{
+					exit(EXIT_FAILURE);
+				}
+			}
+			else
+			{
+				fprintf(stderr, "Child process did not exit normally\n");
+				exit(EXIT_FAILURE);
+			}
 		}
 	}
+	free(stream);
 	exit(EXIT_SUCCESS);
 }
 
@@ -86,13 +101,14 @@ size_t _strlen(char *s)
  *
  * @str1: first string
  * @str2: second string
+ * Return: 0 (same); -1
  */
 
 int _strcmp(char *str1, char *str2)
 {
 	int i = 0;
 
-	while (str2[i] != '\n')
+	while (str1[i] != '\n' && str2[i] != '\n')
 	{
 		if (str1[i] != str2[i])
 		{
@@ -101,5 +117,10 @@ int _strcmp(char *str1, char *str2)
 		i++;
 	}
 
-	return (0);
+	if (str1[i] == '\n' && str2[i] == '\n')
+	{
+		return (0);
+	}
+
+	return (-1);
 }

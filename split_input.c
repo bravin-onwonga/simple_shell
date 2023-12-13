@@ -52,6 +52,13 @@ char **split_string(char *str)
 
 	arr[count] = NULL;
 
+	i = 0;
+	while (arr[i] != NULL)
+	{
+		printf("%s\n", arr[i]);
+		i++;
+	}
+
 	return (arr);
 }
 

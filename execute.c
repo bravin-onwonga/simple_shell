@@ -17,12 +17,19 @@ void execute_function(char *str, size_t len)
 
 	argv = split_string(str);
 
+	if (argv[0] == NULL || argv[0][0] == '\0')
+	{
+		free(argv);
+		return;
+	}
+
 	if (execve(argv[0], argv, environ) == -1)
 	{
-		s = "./shell";
+		s = argv[0];
 		perror(s);
 		exit(EXIT_FAILURE);
 	}
 
 	free(argv);
+	exit(EXIT_SUCCESS);
 }

@@ -17,5 +17,6 @@ int _strcmp(char *str1, char *str2);
 int get_spaces_count(char *str);
 void execute_function(char *stream, size_t len);
 char **split_string(char *str);
+void print_env(char **environ);
 
 #endif /* MAIN_H */
