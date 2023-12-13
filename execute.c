@@ -10,6 +10,7 @@
 void execute_function(char *str, size_t len)
 {
 	char **argv;
+	char *s;
 
 	if (len > 0 && str[len - 1] == '\n')
 		str[len - 1] = '\0';
@@ -18,7 +19,8 @@ void execute_function(char *str, size_t len)
 
 	if (execve(argv[0], argv, environ) == -1)
 	{
-		perror("execve");
+		s = argv[0];
+		perror(s);
 	}
 
 	free(argv);
