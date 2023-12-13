@@ -10,10 +10,10 @@ int _strlen(char *s);
 
 int main(void)
 {
-	int len_prompt;
-	char *str = "$ ";
-	char *stream = NULL;
-	size_t len = 0;
+	int len_prompt, status;
+	char *str = "$ ", *stream = NULL;
+	size_t len = 0, stream_len;
+	pid_t pid, terminated_child;
 
 	while (1)
 	{
@@ -29,6 +29,44 @@ int main(void)
 		{
 			perror("Error reading input");
 			exit(EXIT_FAILURE);
+		}
+
+		stream_len = strlen(stream);
+
+		if ((stream[0] == '.' && stream[1] == '/') || stream[0] == '/')
+		{
+			pid = fork();
+
+			if (pid == -1)
+			{
+				perror("Fork Failed");
+				exit(EXIT_FAILURE);
+			}
+
+			else if (pid == 0)
+			{
+				execute_function(stream, stream_len);
+			}
+			else
+			{
+				terminated_child = waitpid(-1, &status, 0);
+				if (terminated_child == -1)
+				{
+					perror("Couldn't exit");
+					exit(EXIT_FAILURE);
+				}
+			}
+		}
+		else
+		{
+			if (strcmp(stream, "exit\n") == 0)
+				break;
+
+			if (fwrite(stream, 1, stream_len, stdout) != stream_len)
+			{
+				perror("Error writing to stdout");
+				exit(EXIT_FAILURE);
+			}
 		}
 	}
 	exit(EXIT_SUCCESS);
