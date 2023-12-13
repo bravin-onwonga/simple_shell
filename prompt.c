@@ -12,7 +12,8 @@ int main(void)
 {
 	int len_prompt;
 	char *str = "$ ";
-	char stream[1024];
+	char *stream = NULL;
+	size_t len = 0;
 
 	while (1)
 	{
@@ -24,7 +25,7 @@ int main(void)
 			exit(EXIT_FAILURE);
 		}
 
-		if (fgets(stream, sizeof(stream), stdin) == NULL)
+		if (getline(&stream, &len, stdin) == -1)
 		{
 			perror("Error reading input");
 			exit(EXIT_FAILURE);
