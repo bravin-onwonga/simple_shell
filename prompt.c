@@ -11,7 +11,7 @@ int _strlen(char *s);
 int main(void)
 {
 	int len_prompt, status;
-	char *str = "$ ", *stream = NULL;
+	char *str = "#cisfun$ ", *stream = NULL;
 	size_t len = 0, stream_len;
 	pid_t pid, terminated_child;
 
