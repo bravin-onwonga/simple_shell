@@ -43,7 +43,6 @@ int main(void)
 		{
 			perror("Fork Failed");
 			exit(EXIT_FAILURE);
-			break;
 		}
 
 		else if (pid == 0)
@@ -57,7 +56,7 @@ int main(void)
 		}
 		else
 		{
-			terminated_child = waitpid(-1, &status, 0);
+			terminated_child = waitpid(pid, &status, 0);
 			if (terminated_child == -1)
 			{
 				perror("Couldn't exit");
@@ -79,6 +78,7 @@ int main(void)
 			}
 		}
 	}
+	return (0);
 }
 
 /**
