@@ -11,7 +11,7 @@ int _strcmp(char *str1, char *str2);
 
 int main(void)
 {
-	int status, exit_status;
+	int status;
 	char *stream = NULL;
 	size_t len = 0, stream_len;
 	pid_t pid, terminated_child;
@@ -32,6 +32,7 @@ int main(void)
 		if (_strcmp(stream, "exit\n") == 0)
 		{
 			free(stream);
+			break;
 			exit(EXIT_SUCCESS);
 		}
 
@@ -60,20 +61,6 @@ int main(void)
 			if (terminated_child == -1)
 			{
 				perror("Couldn't exit");
-				exit(EXIT_FAILURE);
-			}
-
-			if (WIFEXITED(status))
-			{
-				exit_status = WEXITSTATUS(status);
-				if (exit_status != 0)
-				{
-					exit(EXIT_FAILURE);
-				}
-			}
-			else
-			{
-				fprintf(stderr, "Child process did not exit normally\n");
 				exit(EXIT_FAILURE);
 			}
 		}

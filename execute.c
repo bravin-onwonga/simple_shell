@@ -10,12 +10,14 @@
 void execute_function(char *str, size_t len)
 {
 	char **argv;
-	char *s;
+	char *command;
 
 	if (len > 0 && str[len - 1] == '\n')
 		str[len - 1] = '\0';
 
 	argv = split_string(str);
+
+	command = argv[0];
 
 	if (argv[0] == NULL || argv[0][0] == '\0')
 	{
@@ -23,10 +25,9 @@ void execute_function(char *str, size_t len)
 		return;
 	}
 
-	if (execve(argv[0], argv, environ) == -1)
+	if (execve(command, argv, environ) == -1)
 	{
-		s = argv[0];
-		perror(s);
+		perror(argv[0]);
 		exit(EXIT_FAILURE);
 	}
 
