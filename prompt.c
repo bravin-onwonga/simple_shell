@@ -2,6 +2,7 @@
 
 size_t _strlen(char *s);
 int _strcmp(char *str1, char *str2);
+int len_array(char **arr);
 
 /**
  * main - Entry Point
@@ -11,9 +12,9 @@ int _strcmp(char *str1, char *str2);
 
 int main(void)
 {
-	int status;
-	char *stream = NULL;
-	size_t len = 0, stream_len;
+	int status, len_arr;
+	char *stream = NULL, *path, **argv, *delim = "\n\t ";
+	size_t len = 0;
 	pid_t pid, terminated_child;
 
 	while (1)
@@ -32,39 +33,56 @@ int main(void)
 		if (_strcmp(stream, "exit\n") == 0)
 		{
 			free(stream);
-			break;
 			exit(EXIT_SUCCESS);
 		}
 
-		stream_len = _strlen(stream);
+		argv = split_string(stream, delim);
+		len_arr = len_array(argv);
 
-		pid = fork();
-
-		if (pid == -1)
+		if (argv && (argv[0] == NULL || argv[0][0] == '\0'))
 		{
-			perror("Fork Failed");
-			exit(EXIT_FAILURE);
+			free_array(argv, len_arr);
+			break;
 		}
 
-		else if (pid == 0)
+		path = find_path(argv[0], _strlen(argv[0]));
+
+		if (path)
 		{
-			if (_strcmp(stream, "env\n") == 0)
-				print_env(environ);
-			else
+
+			pid = fork();
+
+			if (pid == -1)
 			{
-				execute_function(stream, stream_len);
-			}
-		}
-		else
-		{
-			terminated_child = waitpid(pid, &status, 0);
-			if (terminated_child == -1)
-			{
-				perror("Couldn't exit");
+				perror("Fork Failed");
 				exit(EXIT_FAILURE);
 			}
+
+			else if (pid == 0)
+			{
+				if (_strcmp(stream, "env\n") == 0)
+					print_env(environ);
+				else
+				{
+					execute_function(path, argv);
+					free_array(argv, len_arr);
+				}
+			}
+			else
+			{
+				terminated_child = waitpid(pid, &status, 0);
+				if (terminated_child == -1)
+				{
+					perror("Couldn't exit");
+					exit(EXIT_FAILURE);
+				}
+			}
 		}
+
+		else
+			perror("Command not found");
 	}
+	free(stream);
 	return (0);
 }
 
@@ -113,4 +131,14 @@ int _strcmp(char *str1, char *str2)
 	}
 
 	return (-1);
+}
+
+int len_array(char **arr)
+{
+	int i = 0;
+
+	while (arr[i] != NULL)
+		i++;
+
+	return (i);
 }

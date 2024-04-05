@@ -7,25 +7,14 @@
  * @len: length of string
  */
 
-void execute_function(char *str, size_t len)
+void execute_function(char *str, char **argv)
 {
-	char **argv;
-	char *command;
+	size_t len = _strlen(str);
+	size_t len_arg = _strlen(argv[0]);
 
-	if (len > 0 && str[len - 1] == '\n')
-		str[len - 1] = '\0';
+	argv[0] = _realloc(argv[0], len_arg, len);
 
-	argv = split_string(str);
-
-	command = argv[0];
-
-	if (argv[0] == NULL || argv[0][0] == '\0')
-	{
-		free(argv);
-		return;
-	}
-
-	if (execve(command, argv, environ) == -1)
+	if (execve(str, argv, environ) == -1)
 	{
 		perror(argv[0]);
 		exit(EXIT_FAILURE);

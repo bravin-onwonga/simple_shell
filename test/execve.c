@@ -18,7 +18,8 @@ int main(void)
 
 		if (pid == 0)
 		{
-			if (execve(argv[0], argv, NULL) == -1)
+
+			if (execve(argv[0], argv, ) == -1)
 			{
 				perror("Execve");
 				exit(EXIT_FAILURE);

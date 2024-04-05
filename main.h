@@ -13,10 +13,14 @@ extern char **environ;
 
 size_t _strlen(char *s);
 void _strcpy(char *dest, char *src);
+char *_strdup(char *str, char *s);
 int _strcmp(char *str1, char *str2);
-int get_spaces_count(char *str);
-void execute_function(char *stream, size_t len);
-char **split_string(char *str);
+void execute_function(char *str, char **argv);
+char **split_string(char *str, char *delim);
 void print_env(char **environ);
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+char *find_path(char *str, size_t len);
+void free_array(char **arr, int len_arr);
+int len_array(char **arr);
 
 #endif /* MAIN_H */

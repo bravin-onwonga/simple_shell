@@ -1,7 +1,7 @@
 #include "main.h"
 
 void _strcpy(char *dest, char *src);
-int get_spaces_count(char *str);
+char *_strdup(char *str, char *s);
 
 /**
  * split_string - splits a string into an array
@@ -10,46 +10,48 @@ int get_spaces_count(char *str);
  * Return: array of strings
  */
 
-char **split_string(char *str)
+char **split_string(char *str, char *c)
 {
-	int i, count = 0, j = 0;
-	char **arr;
+	int count = 0;
+	char **arr = NULL, **temp;
 	char *token;
-	const char *delim = " ";
-
-	count = get_spaces_count(str);
-
-	arr = malloc(sizeof(char *) * (count + 1));
-
-	if (arr == NULL)
-	{
-		perror("Malloc failed");
-		exit(EXIT_FAILURE);
-	}
+	const char *delim = c;
 
 	token = strtok(str, delim);
 
-	i = 0;
 	while (token != NULL)
 	{
-		arr[i] = malloc(_strlen(token) + 1);
-		if (arr[i] == NULL)
+		temp = _realloc(arr, count * sizeof(char *), (count + 1) * sizeof(char *));
+
+		if (temp == NULL)
 		{
-			j = 0;
-			while (j < i)
-			{
-				free(arr[j]);
-			}
-			free(arr);
-			perror("Malloc fail");
+			free_array(arr, count);
 			exit(EXIT_FAILURE);
 		}
-		_strcpy(arr[i], token);
+
+		arr = temp;
+
+		arr[count] = _strdup(token, arr[count]);
+
+		if (!arr[count])
+		{
+			free_array(arr, count);
+			exit(EXIT_FAILURE);
+		}
 
 		token = strtok(NULL, delim);
-		i++;
+		count++;
 	}
 
+	temp = _realloc(arr, count * sizeof(char *), (count + 1) * sizeof(char *));
+
+	if (temp == NULL)
+	{
+		free_array(arr, count);
+		exit(EXIT_FAILURE);
+	}
+
+	arr = temp;
 	arr[count] = NULL;
 
 	return (arr);
@@ -75,22 +77,29 @@ void _strcpy(char *dest, char *src)
 }
 
 /**
- * get_spaces_count - gets numberof spaces in a string
+ * _strdup - duplicates a string
  *
- * @str: string
- * Return: number of spaces(success)
+ * @str: string to duplicate
+ * Return: pointer to duplicated string
  */
 
-int get_spaces_count(char *str)
+char *_strdup(char *str, char *s)
 {
-	int i, count;
+	unsigned int len, i;
 
-	for (i = 0; str[i] != '\0'; i++)
+	i = 0;
+	len = _strlen(str);
+
+	s = malloc(sizeof(char) * len);
+
+	if (s == NULL)
+		return (NULL);
+
+	while (i < len)
 	{
-		if (str[i] == ' ')
-			count++;
+		s[i] = str[i];
+		i++;
 	}
-	count++;
 
-	return (count);
+	return (s);
 }

@@ -11,12 +11,11 @@ int main(void)
 	const char *delim = " ";
 	int *len_arr;
 
-	for (i = 0; str[i] != '\0'; i++)
+	for (i = 1; str[i] != '\0'; i++)
 	{
 		if (str[i] == ' ')
 			count++;
 	}
-	count++;
 
 	arr = malloc(sizeof(char *) * count);
 
