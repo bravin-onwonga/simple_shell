@@ -1,14 +1,13 @@
 #include "main.h"
 
-void free_array(char **arr, int len_arr)
+void free_array(char **arr)
 {
-	int j = 0;
-
-	while (j < len_arr)
+	int i = 0;
+	while (arr[i] != NULL)
 	{
-		free(arr[j]);
-		j++;
+		free(arr[i]);
+		i++;
 	}
 	free(arr);
-	perror("Malloc fail");
+	arr = NULL;
 }

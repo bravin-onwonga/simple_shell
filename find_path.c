@@ -4,30 +4,43 @@
 
 char *find_path(char *str, size_t len)
 {
-	int i = 0, k, j = 0;
-	char *temp, **argv, *delim, *path;
+	int i = 0, k = 0, j = 0;
+	char *temp, **argv = NULL, *delim, *path = NULL, **arr = NULL;
 	size_t len_path;
-	struct stat st;
-
-	temp = malloc(4);
+	/* struct stat st; */
 
 	while (environ[i] != NULL)
 	{
+		temp = malloc(5);
+
+		if (temp == NULL)
+		{
+			perror("Malloc failed for temp");
+			return NULL;
+		}
+
 		k = 0;
 		while (k < 4)
 		{
 			temp[k] = environ[i][k];
 			k++;
 		}
+
+		temp[k] = '\0';
+
 		if (strcmp(temp, "PATH") == 0)
 		{
 			delim = "=";
-			argv = split_string(environ[i], delim);
+			arr = split_string(environ[i], delim);
 
 			delim = ":";
-			argv = split_string(argv[1], delim);
+			argv = split_string(arr[1], delim);
+			free(temp);
+			temp = NULL;
 			break;
 		}
+		free(temp);
+		temp = NULL;
 		i++;
 	}
 
@@ -60,21 +73,23 @@ char *find_path(char *str, size_t len)
 
 		path[len_path] = '\0';
 
-		if (stat(path, &st) == 0)
+		if (access(path, F_OK | X_OK) != -1)
 		{
-			free(argv);
-			printf("%s---\n", path);
+			free_array(argv);
+			free_array(arr);
 			return (path);
 		}
 		else
 		{
-			j = 0;
 			free(path);
+			path = NULL;
 		}
+		j = 0;
 		i++;
 	}
 
-	free(argv);
+	free_array(argv);
+	free_array(arr);
 	free(path);
 	return (NULL);
 }

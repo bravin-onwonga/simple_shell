@@ -9,17 +9,16 @@
 
 void execute_function(char *str, char **argv)
 {
-	size_t len = _strlen(str);
+	size_t len_str = _strlen(str);
 	size_t len_arg = _strlen(argv[0]);
 
-	argv[0] = _realloc(argv[0], len_arg, len);
+	argv[0] = _realloc(argv[0], len_arg, len_str);
 
-	if (execve(str, argv, environ) == -1)
+	argv[0] = strdup(str);
+
+	if (execve(argv[0], argv, environ) == -1)
 	{
-		perror(argv[0]);
+		perror(str);
 		exit(EXIT_FAILURE);
 	}
-
-	free(argv);
-	exit(EXIT_SUCCESS);
 }

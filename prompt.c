@@ -12,7 +12,7 @@ int len_array(char **arr);
 
 int main(void)
 {
-	int status, len_arr;
+	int status;
 	char *stream = NULL, *path, **argv, *delim = "\n\t ";
 	size_t len = 0;
 	pid_t pid, terminated_child;
@@ -37,11 +37,10 @@ int main(void)
 		}
 
 		argv = split_string(stream, delim);
-		len_arr = len_array(argv);
 
 		if (argv && (argv[0] == NULL || argv[0][0] == '\0'))
 		{
-			free_array(argv, len_arr);
+			free_array(argv);
 			break;
 		}
 
@@ -54,35 +53,49 @@ int main(void)
 
 			if (pid == -1)
 			{
+				free_array(argv);
+				free(stream);
 				perror("Fork Failed");
 				exit(EXIT_FAILURE);
 			}
 
-			else if (pid == 0)
+			if (pid == 0)
 			{
 				if (_strcmp(stream, "env\n") == 0)
 					print_env(environ);
 				else
 				{
 					execute_function(path, argv);
-					free_array(argv, len_arr);
 				}
 			}
 			else
 			{
-				terminated_child = waitpid(pid, &status, 0);
+				free_array(argv);
+				free(stream);
+				stream = NULL;
+				len = 0;
+
+				terminated_child = wait(&status);
 				if (terminated_child == -1)
 				{
-					perror("Couldn't exit");
+					perror("Couldn't terminate:");
 					exit(EXIT_FAILURE);
 				}
 			}
 		}
 
 		else
+		{
+			free_array(argv);
+			free(stream);
+			stream = NULL;
+			len = 0;
 			perror("Command not found");
+			continue;
+		}
 	}
 	free(stream);
+	stream = NULL;
 	return (0);
 }
 
@@ -131,14 +144,4 @@ int _strcmp(char *str1, char *str2)
 	}
 
 	return (-1);
-}
-
-int len_array(char **arr)
-{
-	int i = 0;
-
-	while (arr[i] != NULL)
-		i++;
-
-	return (i);
 }

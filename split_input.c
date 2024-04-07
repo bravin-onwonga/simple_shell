@@ -1,7 +1,7 @@
 #include "main.h"
 
 void _strcpy(char *dest, char *src);
-char *_strdup(char *str, char *s);
+char *_strdup(char *str);
 
 /**
  * split_string - splits a string into an array
@@ -10,12 +10,11 @@ char *_strdup(char *str, char *s);
  * Return: array of strings
  */
 
-char **split_string(char *str, char *c)
+char **split_string(char *str, char *delim)
 {
 	int count = 0;
 	char **arr = NULL, **temp;
 	char *token;
-	const char *delim = c;
 
 	token = strtok(str, delim);
 
@@ -25,17 +24,19 @@ char **split_string(char *str, char *c)
 
 		if (temp == NULL)
 		{
-			free_array(arr, count);
+			free_array(arr);
+			perror("Memory allocation failed");
 			exit(EXIT_FAILURE);
 		}
 
 		arr = temp;
 
-		arr[count] = _strdup(token, arr[count]);
+		arr[count] = _strdup(token);
 
 		if (!arr[count])
 		{
-			free_array(arr, count);
+			free_array(arr);
+			printf("arr[count]");
 			exit(EXIT_FAILURE);
 		}
 
@@ -47,7 +48,8 @@ char **split_string(char *str, char *c)
 
 	if (temp == NULL)
 	{
-		free_array(arr, count);
+		free_array(arr);
+		perror("Memory allocation failed1");
 		exit(EXIT_FAILURE);
 	}
 
@@ -83,23 +85,24 @@ void _strcpy(char *dest, char *src)
  * Return: pointer to duplicated string
  */
 
-char *_strdup(char *str, char *s)
+char *_strdup(char *str)
 {
 	unsigned int len, i;
+	char *cpy;
 
 	i = 0;
 	len = _strlen(str);
 
-	s = malloc(sizeof(char) * len);
+	cpy = malloc(sizeof(char) * len + 1);
 
-	if (s == NULL)
+	if (cpy == NULL)
 		return (NULL);
 
 	while (i < len)
 	{
-		s[i] = str[i];
+		cpy[i] = str[i];
 		i++;
 	}
 
-	return (s);
+	return (cpy);
 }
