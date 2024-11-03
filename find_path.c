@@ -9,6 +9,8 @@ char *find_path(char *str, size_t len)
 	size_t len_path;
 	/* struct stat st; */
 
+	fprintf(stdout, "I am in the path file\n");
+
 	while (environ[i] != NULL)
 	{
 		temp = malloc(5);

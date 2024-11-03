@@ -19,15 +19,15 @@ int main(void)
 
 	while (1)
 	{
+		printf("$ ");
+		fflush(stdout);
+
 		if (getline(&stream, &len, stdin) == -1)
 		{
 			if (feof(stdin))
 				continue;
-			else
-			{
-				perror("Error reading input");
-				exit(EXIT_FAILURE);
-			}
+			perror("Error reading input");
+			exit(EXIT_FAILURE);
 		}
 
 		if (_strcmp(stream, "exit\n") == 0)
@@ -38,13 +38,15 @@ int main(void)
 
 		argv = split_string(stream, delim);
 
-		if (argv && (argv[0] == NULL || argv[0][0] == '\0'))
+		if (!argv || !argv[0])
 		{
 			free_array(argv);
-			break;
+			continue;
 		}
 
 		path = find_path(argv[0], _strlen(argv[0]));
+
+		fprintf(stdout, "%s", path);
 
 		if (path)
 		{
@@ -61,19 +63,18 @@ int main(void)
 
 			if (pid == 0)
 			{
-				if (_strcmp(stream, "env\n") == 0)
+				if (_strcmp(stream, "env\n") == 0) {
 					print_env(environ);
+				}
 				else
 				{
 					execute_function(path, argv);
 				}
+				exit (EXIT_SUCCESS);
 			}
 			else
 			{
-				free_array(argv);
-				free(stream);
-				stream = NULL;
-				len = 0;
+				free(path); 
 
 				terminated_child = wait(&status);
 				if (terminated_child == -1)
@@ -86,16 +87,14 @@ int main(void)
 
 		else
 		{
-			free_array(argv);
-			free(stream);
-			stream = NULL;
-			len = 0;
-			perror("Command not found");
-			continue;
+			fprintf(stderr, "%s: Command not found\n", argv[0]);
 		}
+		free_array(argv);
+		free(stream);
+		stream = NULL;
+		len = 0;
 	}
 	free(stream);
-	stream = NULL;
 	return (0);
 }
 
@@ -129,19 +128,12 @@ int _strcmp(char *str1, char *str2)
 {
 	int i = 0;
 
-	while (str1[i] != '\n' && str2[i] != '\n')
+	while (str1[i] && str2[i])
 	{
 		if (str1[i] != str2[i])
-		{
 			return (-1);
-		}
 		i++;
 	}
 
-	if (str1[i] == '\n' && str2[i] == '\n')
-	{
-		return (0);
-	}
-
-	return (-1);
+	return (str1[i] == str2[i] ? 0 : 1);
 }

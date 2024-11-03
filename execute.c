@@ -14,7 +14,7 @@ void execute_function(char *str, char **argv)
 
 	argv[0] = _realloc(argv[0], len_arg, len_str);
 
-	argv[0] = strdup(str);
+	argv[0] = _strdup(str);
 
 	if (execve(argv[0], argv, environ) == -1)
 	{

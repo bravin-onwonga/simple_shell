@@ -11,28 +11,28 @@
 
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 {
-	char *temp;
+	/* char *temp; */
 	char *new_arr;
-	unsigned int i, j;
+	unsigned int i;
+
+	fprintf(stdout, "Reallocating some memories\n");
 
 	if (new_size == old_size)
 		return (ptr);
 	if (ptr == NULL)
 	{
-		ptr = malloc(new_size);
-		if (ptr == NULL)
-		{
-			printf("Here1");
+		new_arr = malloc(new_size);
+		if (new_arr == NULL)
 			return (NULL);
-		}
-		return (ptr);
+		return (new_arr);
 	}
 
 	if (new_size == 0 && ptr != NULL)
 	{
 		free(ptr);
+		return NULL;
 	}
-	temp = (char *)ptr;
+	/* temp = (char *)ptr; */
 
 	new_arr = malloc(new_size);
 
@@ -42,24 +42,11 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 		return (NULL);
 	}
 
-	i = 0;
-	if (new_size < old_size)
-	{
-		while (i <= new_size)
-		{
-			new_arr[i] = temp[i];
-			i++;
-		}
-	}
-	j = 0;
-	if (old_size < new_size)
-	{
-		while (j <= old_size)
-		{
-			new_arr[j] = temp[j];
-			j++;
-		}
-	}
-	ptr = (void *)new_arr;
-	return (ptr);
+	for (i = 0; i < (old_size < new_size ? old_size : new_size); i++)
+    {
+        new_arr[i] = ((char *)ptr)[i];
+    }
+
+	free(ptr);
+	return (new_arr);
 }

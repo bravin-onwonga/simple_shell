@@ -13,8 +13,11 @@ char *_strdup(char *str);
 char **split_string(char *str, char *delim)
 {
 	int count = 0;
-	char **arr = NULL, **temp;
+	char **arr = NULL, **temp = NULL;
 	char *token;
+	int j = 0;
+
+	fprintf(stdout, "I am in the split string file\n");
 
 	token = strtok(str, delim);
 
@@ -36,7 +39,7 @@ char **split_string(char *str, char *delim)
 		if (!arr[count])
 		{
 			free_array(arr);
-			printf("arr[count]");
+			perror("Memory allocation failed for token");
 			exit(EXIT_FAILURE);
 		}
 
@@ -49,12 +52,18 @@ char **split_string(char *str, char *delim)
 	if (temp == NULL)
 	{
 		free_array(arr);
-		perror("Memory allocation failed1");
+		perror("Memory allocation failed1\n");
 		exit(EXIT_FAILURE);
 	}
 
 	arr = temp;
 	arr[count] = NULL;
+
+	for(j = 0; arr[j]; j++) {
+		fprintf(stdout, "arr: %s\n", arr[j]);
+	}
+
+	fprintf(stdout, "Done splitting\n");
 
 	return (arr);
 }
@@ -88,12 +97,12 @@ void _strcpy(char *dest, char *src)
 char *_strdup(char *str)
 {
 	unsigned int len, i;
-	char *cpy;
+	char *cpy = NULL;
 
 	i = 0;
 	len = _strlen(str);
 
-	cpy = malloc(sizeof(char) * len + 1);
+	cpy = malloc(sizeof(char) * (len + 1));
 
 	if (cpy == NULL)
 		return (NULL);
@@ -103,6 +112,7 @@ char *_strdup(char *str)
 		cpy[i] = str[i];
 		i++;
 	}
+	cpy[len] = '\0'; 
 
 	return (cpy);
 }
