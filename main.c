@@ -12,8 +12,8 @@ int len_array(char **arr);
 
 int main(void)
 {
-	int status;
-	char *stream = NULL, *path, **argv, *delim = "\n\t ";
+	int status, i = 0;
+	char *stream = NULL, *path, **argv = NULL, *delim = "\n\t ";
 	size_t len = 0;
 	pid_t pid, terminated_child;
 
@@ -46,8 +46,6 @@ int main(void)
 
 		path = find_path(argv[0], _strlen(argv[0]));
 
-		fprintf(stdout, "%s", path);
-
 		if (path)
 		{
 
@@ -63,18 +61,15 @@ int main(void)
 
 			if (pid == 0)
 			{
-				if (_strcmp(stream, "env\n") == 0) {
+				if (_strcmp(stream, "env\n") == 0)
 					print_env(environ);
-				}
 				else
-				{
 					execute_function(path, argv);
-				}
-				exit (EXIT_SUCCESS);
+				exit(EXIT_SUCCESS);
 			}
 			else
 			{
-				free(path); 
+				free(path);
 
 				terminated_child = wait(&status);
 				if (terminated_child == -1)

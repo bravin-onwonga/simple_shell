@@ -2,68 +2,84 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+char *get_full_path(char **argv, size_t len, char *str);
+
+/**
+  * find_path - finds the path to execute a command
+  * @str: command
+  * @len: length of command
+  * Return: full executable path
+  */
+
 char *find_path(char *str, size_t len)
 {
-	int i = 0, k = 0, j = 0;
-	char *temp, **argv = NULL, *delim, *path = NULL, **arr = NULL;
-	size_t len_path;
-	/* struct stat st; */
-
-	fprintf(stdout, "I am in the path file\n");
+	int i = 0;
+	char **argv = NULL, **arr = NULL;
+	char *temp = NULL;
 
 	while (environ[i] != NULL)
 	{
-		temp = malloc(5);
-
-		if (temp == NULL)
+		if (strncmp(environ[i], "PATH=", 5) == 0)
 		{
-			perror("Malloc failed for temp");
-			return NULL;
-		}
+			temp = _strdup(environ[i]);
 
-		k = 0;
-		while (k < 4)
-		{
-			temp[k] = environ[i][k];
-			k++;
-		}
+			if (temp == NULL)
+			{
+				perror("Malloc failed find path");
+				return (NULL);
+			}
 
-		temp[k] = '\0';
+			arr = split_string(temp, "=");
 
-		if (strcmp(temp, "PATH") == 0)
-		{
-			delim = "=";
-			arr = split_string(environ[i], delim);
-
-			delim = ":";
-			argv = split_string(arr[1], delim);
 			free(temp);
-			temp = NULL;
+
+			if (arr == NULL || arr[1] == NULL)
+			{
+				perror("Failed to parse PATH variable");
+				free_array(arr);
+				return (NULL);
+			}
+
+			argv = split_string(arr[1], ":");
+			free_array(arr);
 			break;
 		}
-		free(temp);
-		temp = NULL;
 		i++;
 	}
+	if (argv)
+		return (get_full_path(argv, len, str));
+	return (NULL);
+}
 
-	i = 0;
+/**
+  * get_full_path - gets the full path
+  * @argv: array of paths
+  * @len: length of command
+  * @str: command
+  * Return: full path or NULL
+  */
+
+char *get_full_path(char **argv, size_t len, char *str)
+{
+	int i = 0, j = 0;
+	size_t len_path = 0;
+	char *path = NULL;
 
 	while (argv[i] != NULL)
 	{
 		len_path = _strlen(argv[i]);
 
-		path = malloc((len_path + len) + 2);
+		path = malloc(len_path + len + 2);
 
 		if (path == NULL)
 		{
-			perror("Malloc failed find_path");
+			perror("Malloc failed find path");
+			free_array(argv);
 			return (NULL);
 		}
 
 		_strcpy(path, argv[i]);
-
 		path[len_path] = '/';
-
 		len_path++;
 
 		while (str[j] != '\0')
@@ -78,20 +94,14 @@ char *find_path(char *str, size_t len)
 		if (access(path, F_OK | X_OK) != -1)
 		{
 			free_array(argv);
-			free_array(arr);
 			return (path);
 		}
-		else
-		{
-			free(path);
-			path = NULL;
-		}
+		free(path);
+		path = NULL;
 		j = 0;
 		i++;
 	}
 
 	free_array(argv);
-	free_array(arr);
-	free(path);
 	return (NULL);
 }

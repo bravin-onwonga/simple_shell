@@ -4,7 +4,7 @@
  * execute_function - executes a function using execve
  *
  * @str: string containing function and argumnent
- * @len: length of string
+ * @argv: array of commands
  */
 
 void execute_function(char *str, char **argv)

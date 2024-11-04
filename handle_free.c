@@ -1,11 +1,16 @@
 #include "main.h"
 
+/**
+  * free_array - handles freeing an array
+  * @arr: array to free
+ */
+
 void free_array(char **arr)
 {
 	int i = 0;
 
 	if (arr == NULL)
-        return;
+		return;
 
 	while (arr[i] != NULL)
 	{

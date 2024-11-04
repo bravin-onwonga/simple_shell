@@ -7,6 +7,7 @@ char *_strdup(char *str);
  * split_string - splits a string into an array
  *
  * @str: string to split
+ * @delim: delimeter used to split string
  * Return: array of strings
  */
 
@@ -14,10 +15,9 @@ char **split_string(char *str, char *delim)
 {
 	int count = 0;
 	char **arr = NULL, **temp = NULL;
-	char *token;
-	int j = 0;
+	char *token = NULL;
 
-	fprintf(stdout, "I am in the split string file\n");
+	/* fprintf(stdout, "I am in the split string file\n"); */
 
 	token = strtok(str, delim);
 
@@ -28,6 +28,7 @@ char **split_string(char *str, char *delim)
 		if (temp == NULL)
 		{
 			free_array(arr);
+			free_array(temp);
 			perror("Memory allocation failed");
 			exit(EXIT_FAILURE);
 		}
@@ -39,6 +40,9 @@ char **split_string(char *str, char *delim)
 		if (!arr[count])
 		{
 			free_array(arr);
+			free_array(temp);
+			if (token)
+				free(token);
 			perror("Memory allocation failed for token");
 			exit(EXIT_FAILURE);
 		}
@@ -52,6 +56,9 @@ char **split_string(char *str, char *delim)
 	if (temp == NULL)
 	{
 		free_array(arr);
+		free_array(temp);
+		if (token)
+			free(token);
 		perror("Memory allocation failed1\n");
 		exit(EXIT_FAILURE);
 	}
@@ -59,11 +66,7 @@ char **split_string(char *str, char *delim)
 	arr = temp;
 	arr[count] = NULL;
 
-	for(j = 0; arr[j]; j++) {
-		fprintf(stdout, "arr: %s\n", arr[j]);
-	}
-
-	fprintf(stdout, "Done splitting\n");
+	/* fprintf(stdout, "Done splitting\n"); */
 
 	return (arr);
 }
@@ -112,7 +115,7 @@ char *_strdup(char *str)
 		cpy[i] = str[i];
 		i++;
 	}
-	cpy[len] = '\0'; 
+	cpy[len] = '\0';
 
 	return (cpy);
 }
