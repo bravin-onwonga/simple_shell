@@ -40,9 +40,6 @@ char **split_string(char *str, char *delim)
 		if (!arr[count])
 		{
 			free_array(arr);
-			free_array(temp);
-			if (token)
-				free(token);
 			perror("Memory allocation failed for token");
 			exit(EXIT_FAILURE);
 		}

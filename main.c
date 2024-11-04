@@ -13,19 +13,16 @@ int len_array(char **arr);
 int main(void)
 {
 	int status;
-	char *stream = NULL, *path, **argv = NULL, *delim = "\n\t ";
+	char *stream = NULL, *path, **argv = NULL;
 	size_t len = 0;
 	pid_t pid, terminated_child;
 
 	while (1)
 	{
-		printf("$ ");
-		fflush(stdout);
-
 		if (getline(&stream, &len, stdin) == -1)
 		{
 			if (feof(stdin))
-				continue;
+				break;
 			perror("Error reading input");
 			exit(EXIT_FAILURE);
 		}
@@ -36,25 +33,27 @@ int main(void)
 			exit(EXIT_SUCCESS);
 		}
 
-		argv = split_string(stream, delim);
+		argv = split_string(stream, " \t\n");
 
 		if (!argv || !argv[0])
 		{
+			fprintf(stderr, "Command not found\n");
 			free_array(argv);
 			continue;
 		}
 
-		path = find_path(argv[0], _strlen(argv[0]));
+		if (access(argv[0], F_OK | X_OK) != -1)
+			path = argv[0];
+		else
+			path = find_path(argv[0], _strlen(argv[0]));
 
 		if (path)
 		{
-
 			pid = fork();
 
 			if (pid == -1)
 			{
 				free_array(argv);
-				free(stream);
 				perror("Fork Failed");
 				exit(EXIT_FAILURE);
 			}
@@ -69,7 +68,7 @@ int main(void)
 			}
 			else
 			{
-				free(path);
+				/* free(path); */
 
 				terminated_child = wait(&status);
 				if (terminated_child == -1)
@@ -85,7 +84,6 @@ int main(void)
 			fprintf(stderr, "%s: Command not found\n", argv[0]);
 		}
 		free_array(argv);
-		free(stream);
 		stream = NULL;
 		len = 0;
 	}
