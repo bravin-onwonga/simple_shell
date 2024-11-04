@@ -12,7 +12,7 @@ int len_array(char **arr);
 
 int main(void)
 {
-	int status, i = 0;
+	int status;
 	char *stream = NULL, *path, **argv = NULL, *delim = "\n\t ";
 	size_t len = 0;
 	pid_t pid, terminated_child;
