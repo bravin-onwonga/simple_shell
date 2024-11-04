@@ -34,13 +34,11 @@ int main(void)
 		if (*trimmed == '\0')
 			continue;
 
-		/*
-		 * if (_strcmp(stream, "exit\n") == 0)
-		 * {
-		 * free(stream);
-		 * exit(EXIT_SUCCESS);
-		 * }
-		 */
+		if (_strcmp(stream, "exit\n") == 0)
+		{
+			free(stream);
+			exit(EXIT_SUCCESS);
+		}
 
 		argv = split_string(stream, " \t\n");
 
@@ -53,6 +51,8 @@ int main(void)
 
 		if (access(argv[0], F_OK | X_OK) != -1)
 			path = _strdup(argv[0]);
+		else
+			path = find_path(argv[0], _strlen(argv[0]));
 
 		if (path)
 		{
