@@ -15,7 +15,7 @@ char *find_path(char *str, size_t len)
 {
 	int i = 0;
 	char **argv = NULL, **arr = NULL;
-	char *temp = NULL;
+	char *temp = NULL, *path;
 
 	while (environ[i] != NULL)
 	{
@@ -47,7 +47,11 @@ char *find_path(char *str, size_t len)
 		i++;
 	}
 	if (argv)
-		return (get_full_path(argv, len, str));
+	{
+		path = get_full_path(argv, len, str);
+		free_array(argv);
+		return (path);
+	}
 	return (NULL);
 }
 
@@ -92,16 +96,11 @@ char *get_full_path(char **argv, size_t len, char *str)
 		path[len_path] = '\0';
 
 		if (access(path, F_OK | X_OK) != -1)
-		{
-			free_array(argv);
 			return (path);
-		}
 		free(path);
 		path = NULL;
 		j = 0;
 		i++;
 	}
-
-	free_array(argv);
 	return (NULL);
 }

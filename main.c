@@ -13,7 +13,7 @@ int len_array(char **arr);
 int main(void)
 {
 	int status;
-	char *stream = NULL, *path, **argv = NULL;
+	char *stream = NULL, *path = NULL, **argv = NULL;
 	size_t len = 0;
 	pid_t pid, terminated_child;
 
@@ -43,7 +43,7 @@ int main(void)
 		}
 
 		if (access(argv[0], F_OK | X_OK) != -1)
-			path = argv[0];
+			path = _strdup(argv[0]);
 		else
 			path = find_path(argv[0], _strlen(argv[0]));
 
@@ -68,8 +68,6 @@ int main(void)
 			}
 			else
 			{
-				/* free(path); */
-
 				terminated_child = wait(&status);
 				if (terminated_child == -1)
 				{
@@ -84,7 +82,9 @@ int main(void)
 			fprintf(stderr, "%s: Command not found\n", argv[0]);
 		}
 		free_array(argv);
+		free(stream);
 		stream = NULL;
+		free(path);
 		len = 0;
 	}
 	free(stream);

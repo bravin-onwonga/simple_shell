@@ -36,15 +36,11 @@ void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 	new_arr = malloc(new_size);
 
 	if (new_arr == NULL)
-	{
-		printf("Here2");
 		return (NULL);
-	}
 
 	for (i = 0; i < (old_size < new_size ? old_size : new_size); i++)
 		new_arr[i] = ((char *)ptr)[i];
 
-	if (ptr)
-		free(ptr);
+	free(ptr);
 	return (new_arr);
 }
