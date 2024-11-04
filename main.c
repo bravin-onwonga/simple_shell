@@ -53,8 +53,6 @@ int main(void)
 
 		if (access(argv[0], F_OK | X_OK) != -1)
 			path = _strdup(argv[0]);
-		/* path = find_path(argv[0], _strlen(argv[0])); */
-		fprintf(stdout, "Here: %s", argv[0]);
 
 		if (path)
 		{
